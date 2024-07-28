@@ -1,55 +1,38 @@
-# Northcoders News API
+# EF Digital Software Engineer Test
 
-## Table of Contents
+## Instructions:
 
-- [Project Summary](#project-summary)
-- [Install](#install)
-- [Usage](#usage)
-    - [Seeding the Database](#seeding-the-database)
-	- [Environment Variables](#environment-variables)
-    - [Minimum Versions Required](#minimum-versions-required)
-- [API](#api)
+Hult/EF specialize in delivering immersive learning programs focused on the most critical global business skills for all levels of employees. Programs are run on a short period and new ones come and go frequently, to help with the maintenance of this, the marketing team would like an admin dashboard to manage program content. As the backend developer on this project you are expected to create an API that will faciliate CRUD requests from the new UI.
 
-## Project Summary
+Spending no longer than 4 hours on the test, use the examples provided in the **"example-programs.json"** folder to build an API. Should look to complete me the work in the following priority order:
+1. Ability to query all programs and return a list
+2. Ability to add a program to the list
+3. Unit tests for each API created
+4. Ability to delete a program from the list
+5. Ability to update a given program
 
-This project creates an API that allows users to access application data programmatically. It is designed to mimic a real world backend service (such as Reddit), which must provide information to the front end architecture. The database is built in PSQL and node-postgres is used for interfacing with the database.
+On completion of the test:
+- Compress code and send back to interviewer via email
 
-## Install
+### Considerations
 
-To run this project, the repo must be cloned in your local directory.
+- This new dashboard should only be visible to marketing managers and administrators
 
-This project relies on [node](http://nodejs.org) and [npm](https://npmjs.com). Node.js version 6.9 and Postgres version 15.5 are the minimum versions required for this project.
+## Requirements
 
-Using npm, the following dependencies must be installed: 
-- [dotenv](https://www.npmjs.com/package/dotenv)
-- [express](https://expressjs.com/)
-- [husky](https://typicode.github.io/husky/)
-- [pg](https://www.npmjs.com/package/pg)
-- [pg-format](https://www.npmjs.com/package/pg-format)
+The only two requirements of this work is thats its written in TypeScript and comes with instructions on how to deploy locally.
+
+## Examples
+
+Some example stacks provided below on how to go about this test:
+
+- Using express js (https://expressjs.com/) server with dynamodb local (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html)
+- Using localstack and serverless framework (https://docs.localstack.cloud/user-guide/integrations/serverless-framework/)
 
 
-## Usage
-
-### Environment Variables
-
-To set the environment variables, you will need to create two .env files for your project: .env.test and .env.development. Into each, add PGDATABASE=, with the correct database name for that environment (see /db/setup.sql for the database names).
-
-### Seeding the Database
-
-Once the project has been installed with its required dependencies, the following command can be used to setup and then seed the databases.
-
-```sh
-$ npm run setup-dbs
-$ npm run seed
-```
-
-The project can be tested by running Jest on the app.test.js file.
-
-```sh
-$ npm test app.test.js
-```
-
-## API 
-
-The hosted version of this project can be found on [Render](https://backend-project-cr4a.onrender.com)
-
+### References
+- Express JS: https://expressjs.com/
+- Localstack: https://github.com/localstack/localstack
+- Serverless: https://serverless.com
+- Localstack Serverless Plugin: https://github.com/localstack/serverless-localstack
+- AWS CLI: https://docs.aws.amazon.com/cli/latest/reference/

@@ -6,30 +6,24 @@ const {
   formatComments,
 } = require('./utils');
 
-const seed = ({ topicData, userData, articleData, commentData }) => {
+const seed = ({ programData, articleData }) => {
   return db
     .query(`DROP TABLE IF EXISTS comments;`)
     .then(() => {
       return db.query(`DROP TABLE IF EXISTS articles;`);
     })
     .then(() => {
-      return db.query(`DROP TABLE IF EXISTS users;`);
+      return db.query(`DROP TABLE IF EXISTS programs;`);
     })
     .then(() => {
-      return db.query(`DROP TABLE IF EXISTS topics;`);
-    })
-    .then(() => {
-      const topicsTablePromise = db.query(`
-      CREATE TABLE topics (
-        slug VARCHAR PRIMARY KEY,
-        description VARCHAR
-      );`);
-
       const usersTablePromise = db.query(`
-      CREATE TABLE users (
-        username VARCHAR PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        avatar_url VARCHAR
+      CREATE TABLE programs (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR NOT NULL,
+        topic VARCHAR NOT NULL,
+        learningFormats VARCHAR NOT NULL,
+        bestseller BOOLEAN NOT NULL,
+        startDate TIMESTAMP NOT NULL,
       );`);
 
       return Promise.all([topicsTablePromise, usersTablePromise]);
@@ -48,34 +42,19 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       );`);
     })
     .then(() => {
-      return db.query(`
-      CREATE TABLE comments (
-        comment_id SERIAL PRIMARY KEY,
-        body VARCHAR NOT NULL,
-        article_id INT REFERENCES articles(article_id) NOT NULL,
-        author VARCHAR REFERENCES users(username) NOT NULL,
-        votes INT DEFAULT 0 NOT NULL,
-        created_at TIMESTAMP DEFAULT NOW()
-      );`);
-    })
-    .then(() => {
-      const insertTopicsQueryStr = format(
-        'INSERT INTO topics (slug, description) VALUES %L;',
-        topicData.map(({ slug, description }) => [slug, description])
-      );
-      const topicsPromise = db.query(insertTopicsQueryStr);
-
-      const insertUsersQueryStr = format(
-        'INSERT INTO users ( username, name, avatar_url) VALUES %L;',
-        userData.map(({ username, name, avatar_url }) => [
-          username,
-          name,
-          avatar_url,
+      const insertProgramsQueryStr = format(
+        'INSERT INTO programs ( id, title, topic, learningFormats, bestseller, startDate) VALUES %L;',
+        programData.map(({ id, title, topic, learningFormats, bestseller, startDate }) => [
+          id,
+          title,
+          topic,
+          learningFormats,
+          bestseller,
+          startDate
         ])
       );
-      const usersPromise = db.query(insertUsersQueryStr);
 
-      return Promise.all([topicsPromise, usersPromise]);
+      return db.query(insertProgramsQueryStr);
     })
     .then(() => {
       const formattedArticleData = articleData.map(convertTimestampToDate);
@@ -96,24 +75,6 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
 
       return db.query(insertArticlesQueryStr);
     })
-    .then(({ rows: articleRows }) => {
-      const articleIdLookup = createRef(articleRows, 'title', 'article_id');
-      const formattedCommentData = formatComments(commentData, articleIdLookup);
-
-      const insertCommentsQueryStr = format(
-        'INSERT INTO comments (body, author, article_id, votes, created_at) VALUES %L;',
-        formattedCommentData.map(
-          ({ body, author, article_id, votes = 0, created_at }) => [
-            body,
-            author,
-            article_id,
-            votes,
-            created_at,
-          ]
-        )
-      );
-      return db.query(insertCommentsQueryStr);
-    });
 };
 
 module.exports = seed;
